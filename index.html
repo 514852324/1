@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<!-- 微信移动端核心适配，解决打开报错 -->
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>新年快乐 2026马到成功</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    height:100vh;
+    overflow:hidden;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+    /* 除夕夜城市烟花夜景背景 */
+    background:url(https://img0.baidu.com/it/u=2792925695,3807730199&fm=253&fmt=auto&app=138&f=JPEG?w=1080&h=1920) no-repeat center center fixed;
+    background-size:cover;
+    background-color: #0a0a23; /* 黑夜兜底，适配背景加载失败 */
+    position:relative;
+}
+/* 黑夜遮层增强烟花对比，保留喜庆感 */
+body::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.2);
+    z-index:1;
+    pointer-events: none;
+}
+.container{
+    position:relative;
+    width:100%;
+    height:100%;
+    z-index:5;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+/* 打字机文字容器 - 适配换行 */
+.typewriter{
+    font-size:32px;
+    font-weight:bold;
+    color:#fff;
+    text-shadow:0 0 10px #ffd700,0 0 20px #ff0000,0 0 30px #ffd700;
+    margin-bottom:30px;
+    line-height:1.5;
+    text-align:center;
+    white-space: pre-line; /* 支持换行符生效 */
+}
+/* 打字机光标闪烁 */
+.typewriter::after{
+    content:"|";
+    animation:blink 0.8s infinite;
+    color:#ff0000;
+}
+@keyframes blink{
+    0%,100%{opacity:1;}
+    50%{opacity:0;}
+}
+/* 掉落元素：红包/元宝/福/小马 - 红色+金色描边 */
+.drop{
+    position:absolute;
+    font-size:24px;
+    color: #ff0000; /* 文字红色 */
+    font-weight: bold; /* 加粗醒目 */
+    text-shadow:0 0 5px #ffd700; /* 金色描边增强喜庆感 */
+    animation:fall linear infinite;
+    top:-50px;
+    z-index:4;
+}
+@keyframes fall{
+    to{transform:translateY(105vh);}
+}
+/* 单匹马样式 - 屏幕下方，不遮挡文字 */
+.horse{
+    position:absolute;
+    font-size:40px;
+    line-height:1;
+    z-index:10;
+    top: 70%;
+    transform:translateY(-50%);
+    display:none;
+}
+/* 小马奔跑动画 */
+@keyframes runHorse{
+    0%{left:-100px;}
+    100%{left:100vw;}
+}
+
+/* ========== 4种烟花样式核心CSS（新增，不改动其他样式） ========== */
+/* 1. 基础爆炸型烟花（原样式，小粒子扩散） */
+.firework-burst {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    z-index: 8;
+    pointer-events: none;
+    animation: firework-burst 0.9s ease-out forwards;
+}
+@keyframes firework-burst {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+}
+
+/* 2. 放射状烟花（长条粒子，蒲公英式放射） */
+.firework-ray {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    border-radius: 50%;
+    z-index: 8;
+    pointer-events: none;
+    transform-origin: center;
+    animation: firework-ray 1s ease-out forwards;
+}
+@keyframes firework-ray {
+    0% { transform: rotate(var(--angle)) translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: rotate(var(--angle)) translate(0, var(--length)) scale(0.2); opacity: 0; }
+}
+
+/* 3. 星型烟花（大粒子+闪烁发光，视觉冲击强） */
+.firework-star {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    z-index: 8;
+    pointer-events: none;
+    animation: firework-star 1.2s ease-out forwards;
+}
+@keyframes firework-star {
+    0% { transform: translate(0, 0); opacity: 1; box-shadow: 0 0 5px currentColor; }
+    50% { opacity: 1; box-shadow: 0 0 15px currentColor, 0 0 30px currentColor; }
+    100% { transform: translate(var(--tx), var(--ty)); opacity: 0; box-shadow: none; }
+}
+
+/* 4. 尾迹型烟花（带彩色拖尾，模拟烟花尾焰） */
+.firework-trail {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    z-index: 8;
+    pointer-events: none;
+    animation: firework-trail 1s ease-out forwards;
+}
+@keyframes firework-trail {
+    0% { transform: translate(0, 0); opacity: 1; box-shadow: 0 0 0 transparent; }
+    20% { box-shadow: 0 0 10px currentColor, 0 0 20px currentColor; }
+    100% { transform: translate(var(--tx), var(--ty)); opacity: 0; box-shadow: 0 0 0 transparent; }
+}
+
+/* 移动端适配，小屏文字缩小 */
+@media (max-width:375px){
+    .typewriter{font-size:28px;}
+    .drop{font-size:20px;}
+    .horse{font-size:32px;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="typewriter" id="typeWriter"></div>
+</div>
+<!-- 像素小马 -->
+<div class="horse" id="horse">🐎💨</div>
+
+<script>
+// 打字机文字内容 - 定制换行祝福语
+const text = "新年快乐\n2026志鹏祝您\n金马纳福，阖家欢乐";
+const typeWriter = document.getElementById('typeWriter');
+const horse = document.getElementById('horse');
+let index = 0;
+let charIndex = 0;
+const lines = text.split('\n'); // 拆分换行
+// 优化打字机效果：支持换行逐字显示
+function typeText() {
+    if (index < lines.length) {
+        if (charIndex < lines[index].length) {
+            // 拼接当前行已输入内容 + 下一个字符
+            const currentLine = lines[index].substring(0, charIndex + 1);
+            // 拼接已完成的行 + 当前行
+            const displayText = lines.slice(0, index).join('\n') + (index > 0 ? '\n' : '') + currentLine;
+            typeWriter.innerHTML = displayText;
+            charIndex++;
+            setTimeout(typeText, 150); // 150ms/字，节奏紧凑
+        } else {
+            // 换行
+            index++;
+            charIndex = 0;
+            setTimeout(typeText, 200);
+        }
+    } else {
+        // 文字打完后，隐藏光标，显示小马并触发奔跑
+        typeWriter.innerHTML = typeWriter.innerHTML.replace(/\|$/, '');
+        horse.style.display = "block";
+        horse.style.animation = "runHorse 3s linear forwards";
+        // 小马跑完后增强文字发光效果
+        setTimeout(()=>{
+            typeWriter.style.textShadow = "0 0 15px #ffd700,0 0 30px #ff0000";
+        },3000);
+    }
+}
+
+// 生成掉落元素：红包/元宝/福/小马/新年好/福字（666改为新年好，文字红色）
+const words = ['🧧','💰','🏮','福','🐴','🍊','新年好','吉'];
+// 优化掉落元素：加快速度、增加数量
+function createDrop() {
+    const drop = document.createElement('div');
+    drop.className = 'drop';
+    drop.innerText = words[Math.floor(Math.random()*words.length)];
+    drop.style.left = Math.random()*100+'vw';
+    drop.style.animationDuration = Math.random()*2+1+'s'; // 掉落时长1-3s
+    drop.style.animationDelay = Math.random()*1+'s'; // 延迟缩短
+    document.body.appendChild(drop);
+    // 3s后移除元素，加快循环
+    setTimeout(()=>{drop.remove();},3000);
+}
+// 自动生成掉落元素：每800ms10个，更密集
+setInterval(()=>{
+    for(let i=0;i<10;i++) createDrop();
+},800);
+
+// ========== 4种烟花特效实现（核心新增，不改动其他逻辑） ==========
+// 新年喜庆烟花配色（红/金/白/粉/绿/蓝/橙）
+const fireworkColors = ['#ff0000', '#ffd700', '#ffffff', '#ff69b4', '#00ff99', '#00ccff', '#ff8c00'];
+
+// 1. 基础爆炸型烟花（小粒子圆形扩散）
+function createBurstFirework(x, y) {
+    const particleCount = 150;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-burst';
+        particle.style.backgroundColor = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 120 + 60;
+        particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+    }
+}
+
+// 2. 放射状烟花（长条粒子射线式放射）
+function createRayFirework(x, y) {
+    const rayCount = 36; // 36条射线，完美圆形
+    for (let i = 0; i < rayCount; i++) {
+        const ray = document.createElement('div');
+        ray.className = 'firework-ray';
+        ray.style.backgroundColor = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+        ray.style.left = `${x}px`;
+        ray.style.top = `${y}px`;
+        const angle = (i / rayCount) * Math.PI * 2;
+        const length = Math.random() * 80 + 60;
+        ray.style.setProperty('--angle', `${angle}rad`);
+        ray.style.setProperty('--length', `${length}px`);
+        document.body.appendChild(ray);
+        setTimeout(() => ray.remove(), 1000);
+    }
+}
+
+// 3. 星型烟花（大粒子+中途闪烁，星光绽放）
+function createStarFirework(x, y) {
+    const starCount = 80;
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'firework-star';
+        star.style.backgroundColor = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+        star.style.color = star.style.backgroundColor; // 用于闪烁阴影
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 120 + 70;
+        star.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        star.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 1200);
+    }
+}
+
+// 4. 尾迹型烟花（带彩色拖尾，模拟烟花尾焰）
+function createTrailFirework(x, y) {
+    const trailCount = 100;
+    for (let i = 0; i < trailCount; i++) {
+        const trail = document.createElement('div');
+        trail.className = 'firework-trail';
+        trail.style.backgroundColor = fireworkColors[Math.floor(Math.random() * fireworkColors.length)];
+        trail.style.color = trail.style.backgroundColor; // 用于拖尾阴影
+        trail.style.left = `${x}px`;
+        trail.style.top = `${y}px`;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 100 + 60;
+        trail.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        trail.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(trail);
+        setTimeout(() => trail.remove(), 1000);
+    }
+}
+
+// 随机触发4种烟花中的一种，避免单调
+function randomFirework(x, y) {
+    const fireworkTypes = [
+        createBurstFirework,
+        createRayFirework,
+        createStarFirework,
+        createTrailFirework
+    ];
+    const randomType = fireworkTypes[Math.floor(Math.random() * fireworkTypes.length)];
+    randomType(x, y);
+}
+
+// 自动随机释放烟花：每300ms一次，数量多、频率快，氛围热闹
+setInterval(() => {
+    const randomX = Math.random() * window.innerWidth;
+    const randomY = Math.random() * window.innerHeight;
+    randomFirework(randomX, randomY);
+}, 300);
+
+// 点击屏幕：加倍掉落红色元素+触发随机烟花，互动感拉满
+document.addEventListener('click',(e)=>{
+    for(let i=0;i<20;i++) createDrop();
+    randomFirework(e.clientX, e.clientY);
+});
+
+// 背景图加载失败兜底：自动切换黑夜渐变背景
+window.addEventListener('load', function() {
+    const body = document.body;
+    const img = new Image();
+    img.src = body.style.backgroundImage.replace(/url\(|\)|"/g, '');
+    img.onerror = function() {
+        body.style.background = 'linear-gradient(180deg, #050014 0%, #1a0033 100%)';
+        body.style.backgroundSize = 'cover';
+    };
+});
+
+// 页面加载后启动打字机
+window.onload = ()=>{
+    setTimeout(typeText, 500);
+};
+</script>
+</body>
+</html>
